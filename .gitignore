@@ -1,0 +1,37 @@
+# Visual Studio Code files
+.vscode/
+
+# NuGet Packages
+*.nupkg
+*.snupkg
+*.nuspec
+packages/
+
+# Publish folder
+publish/
+
+# Visual Studio settings
+.vs/
+
+# Rider settings
+.idea/
+
+# Environment Variables
+.env
+*.local
+
+# Other files
+*.log
+*.tlog
+*.dbmdl
+*.dbproj.schemaview
+*.dbproj
+
+# Backup files
+*.bak
+*.tmp
+*.temp
+
+# Ignore build outputs
+bin/
+obj/

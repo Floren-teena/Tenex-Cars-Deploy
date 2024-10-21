@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34607.119
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TenexCarsDeploy", "TenexCarsDeploy\TenexCarsDeploy.csproj", "{5E717852-969A-4017-AABA-F74D6BD779A6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TenexCarsDeploy.Data", "TenexCarsDeploy.Data\TenexCarsDeploy.Data.csproj", "{15500E25-D3CB-4ABB-AC73-CB5975CA4BA1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5E717852-969A-4017-AABA-F74D6BD779A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E717852-969A-4017-AABA-F74D6BD779A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E717852-969A-4017-AABA-F74D6BD779A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E717852-969A-4017-AABA-F74D6BD779A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15500E25-D3CB-4ABB-AC73-CB5975CA4BA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15500E25-D3CB-4ABB-AC73-CB5975CA4BA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15500E25-D3CB-4ABB-AC73-CB5975CA4BA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15500E25-D3CB-4ABB-AC73-CB5975CA4BA1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B7A13AF0-F3A0-4D63-8BD0-19478820B7BC}
+	EndGlobalSection
+EndGlobal
