@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TenexCarsDeploy.Data.Enums;
 using TenexCarsDeploy.Data.Models;
 using TenexCarsDeploy.Data.Repositories.Interfaces;
 using TenexCarsDeploy.Data.ViewModels;
 using TenexCarsDeploy.Interfaces;
+using TenexCarsDeploy.Models.ViewModels;
 
 namespace TenexCarsDeploy.Controllers.Operator_Controller
 {
@@ -437,7 +439,7 @@ namespace TenexCarsDeploy.Controllers.Operator_Controller
                         throw;
                     }
                 }
-                /* return RedirectToAction(nameof(CarDetails), new { id = vehicle.Id });*/
+    
             }
             return View(vehicleViewModel);
         }
