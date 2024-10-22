@@ -332,5 +332,13 @@ namespace TenexCarsDeploy.Controllers.Subscriber_Controller
                 return View(completeReservation);
             }
         }
+
+        [HttpGet]
+        public IActionResult PostReservation()
+        {
+            return View();
+        }
+
+
     }
 }
