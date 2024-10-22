@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using TenexCarsDeploy.Data.Enums;
 using TenexCarsDeploy.Data.Models;
 using TenexCarsDeploy.Data.Repositories.Interfaces;
+using TenexCarsDeploy.Data.ViewModels;
 using TenexCarsDeploy.Interfaces;
 
 namespace TenexCarsDeploy.Controllers.Operator_Controller
@@ -56,8 +57,8 @@ namespace TenexCarsDeploy.Controllers.Operator_Controller
         public async Task<IActionResult> Home(QueryObject query)
         {
             var user = await _userManager.GetUserAsync(User);
-            var existingOperator = await _operatorRepository.GetOperatorByUserId(user.Id);
-            var vehicles = await _vehicleRepository.GetAllVehiclesByOperator(existingOperator.Id);
+            var existingOperator = await _operatorRepository.GetOperatorByUserId(user!.Id);
+            var vehicles = await _vehicleRepository.GetAllVehiclesByOperator(existingOperator!.Id);
             var filteredVehicles = await _vehicleRepository.GetAllVehiclesByOperatorFilter(existingOperator.Id, query);
             var operatorCompanyName = vehicles.FirstOrDefault()?.Operator?.CompanyName;
             var type = Enum.GetValues(typeof(CarType)).Cast<CarType>();
