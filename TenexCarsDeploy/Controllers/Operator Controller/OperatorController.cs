@@ -565,7 +565,7 @@ namespace TenexCarsDeploy.Controllers.Operator_Controller
                 return Unauthorized();
             }
 
-            Operator existingOperator = null;
+            Operator? existingOperator = null;
 
             if (loggedInUser.Type == "Main_Operator")
             {
@@ -574,8 +574,8 @@ namespace TenexCarsDeploy.Controllers.Operator_Controller
             else if (loggedInUser.Type == "Operator_Team_Member")
             {
                 var operatorMember = await _operatorRepository.GetOperatorMemberByUserId(loggedInUser.Id);
-                existingOperator = await _operatorRepository.GetOperatorById(operatorMember.OperatorId);
-                ViewBag.CompanyName = existingOperator.CompanyName;
+                existingOperator = await _operatorRepository.GetOperatorById(operatorMember!.OperatorId!);
+                ViewBag.CompanyName = existingOperator!.CompanyName;
             }
             else
             {
@@ -603,7 +603,7 @@ namespace TenexCarsDeploy.Controllers.Operator_Controller
                 // Find the subscription related to the current vehicle
                 var subscription = await _subscription.GetSubscriptionForVehicle(vehicle.Id);
 
-                var subscriber = subscription is not null ? await _subscriberRepo.GetSubscriberByIdAsync(subscription.SubscriberId) : null;
+                var subscriber = subscription is not null ? await _subscriberRepo.GetSubscriberByIdAsync(subscription.SubscriberId!) : null;
 
                 var viewModel = new OperatorInventoryViewModel
                 {
@@ -620,7 +620,6 @@ namespace TenexCarsDeploy.Controllers.Operator_Controller
                 viewModelList.Add(viewModel);
             }
 
-            // Pass the view model list to the view
             return View(viewModelList);
         }
 
@@ -644,7 +643,7 @@ namespace TenexCarsDeploy.Controllers.Operator_Controller
 
                 var viewModel = new OperatorDashboardViewModel
                 {
-                    OperatorId = operatorUser.Id,
+                    OperatorId = operatorUser!.Id,
                     TotalNumberOfVehicles = totalVehicles,
                     TotalNumberOfSubscribers = totalSubscribers,
                     TotalNumberOfReservedCars = totalReservedCars,
@@ -673,11 +672,11 @@ namespace TenexCarsDeploy.Controllers.Operator_Controller
         public async Task<IActionResult> OperatorProfileSettings()
         {
             var user = await _userManager.GetUserAsync(User);
-            var existingOperator = await _operatorRepository.GetOperatorByUserId(user.Id);
+            var existingOperator = await _operatorRepository.GetOperatorByUserId(user!.Id);
 
             var operatorDetails = new OperatorProfileSettingsViewModel
             {
-                Name = $"{existingOperator.FirstName} {existingOperator.LastName}",
+                Name = $"{existingOperator!.FirstName} {existingOperator.LastName}",
                 Email = existingOperator.Email
             };
 
@@ -698,7 +697,7 @@ namespace TenexCarsDeploy.Controllers.Operator_Controller
                     return RedirectToAction("Login", "Account");
                 }
 
-                var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+                var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword!, model.NewPassword!);
                 if (result.Succeeded)
                 {
                     await _userManager.UpdateSecurityStampAsync(user);
