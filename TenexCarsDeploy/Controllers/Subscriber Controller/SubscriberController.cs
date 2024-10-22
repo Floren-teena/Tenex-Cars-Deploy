@@ -152,6 +152,185 @@ namespace TenexCarsDeploy.Controllers.Subscriber_Controller
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> CompleteReservation()
+        {
+            var user = await _manager.GetUserAsync(User);
+            var subscriber = user is not null ? await _subscriberRepository.GetSubscriberByUserId(user.Id) : null;
 
+            var getExistingSubscription = subscriber is not null ? await _subscriptionRepository.GetSubscriptionBySubcriber(subscriber.Id) : null;
+            var vehicle = getExistingSubscription is not null ? await _vehicleRepository.GetVehicleById(getExistingSubscription.VehicleId!) : null;
+
+            var reserve = new CompleteReservationViewModel
+            {
+                AppUserId = user!.Id,
+                FirstName = user.FirstName,
+                VehicleName = vehicle is not null ? $"{vehicle.Make} {vehicle.Model}" : null,
+                ReservationFee = vehicle is not null ? vehicle.ReservationFee.ToString() : null,
+                MonthlyCost = vehicle is not null ? vehicle.MonthlyCost.ToString() : null,
+                TotalCost = vehicle is not null ? vehicle.ReservationFee.ToString() : null
+            };
+            return View(reserve);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CompleteReservation(CompleteReservationViewModel completeReservation)
+        {
+            _logger.LogInformation("Completing Reservation ...");
+            try
+            {
+                var user = await _manager.GetUserAsync(User);
+
+                if (user != null)
+                {
+                    var age = _subscriberRepository.CalculateAge(completeReservation.DateOfBirth!.Value);
+
+                    if (age < 16)
+                    {
+                        TempData["error"] = "You must be at least 16 years old to complete the reservation.";
+                        return View(completeReservation);
+                    }
+
+                    var subscriber = await _subscriberRepository.GetSubscriberByUserId(user.Id);
+
+                    if (subscriber == null)
+                    {
+                        _logger.LogError("User is not a subscriber");
+                        TempData["error"] = "Error, User is not a subscriber";
+
+                        return RedirectToAction("Login", "Account");
+                    }
+
+                    subscriber.DateOfBirth = completeReservation.DateOfBirth;
+
+                    var updatedSubscriber = await _subscriberRepository.UpdateSubscriberAsync(subscriber);
+
+                    var getExistingSubscription = await _subscriptionRepository.GetSubscriptionBySubcriber(updatedSubscriber.Id);
+                    var vehicle = getExistingSubscription is not null ? await _vehicleRepository.GetVehicleById(getExistingSubscription.VehicleId!) : null;
+
+                    var licenseFront = await _photoService.AddPhotoAsync(completeReservation.DriversLicenseFront!);
+                    var licenseBack = await _photoService.AddPhotoAsync(completeReservation.DriversLicenseBack!);
+
+                    getExistingSubscription!.DLUrlFront = licenseFront.Url.ToString();
+                    getExistingSubscription.DLUrlBack = licenseBack.Url.ToString();
+                    getExistingSubscription.TermStart = DateTime.UtcNow;
+
+
+
+                    getExistingSubscription.TermEnd = completeReservation.SubscriptionDuration == SubscriptionDuration.SDSD_3Months ? DateTime.UtcNow.AddMonths(3)
+                                                        : completeReservation.SubscriptionDuration == SubscriptionDuration.SDSD_6Months ? DateTime.UtcNow.AddMonths(6)
+                                                        : DateTime.UtcNow.AddMonths(9);
+                    getExistingSubscription.Duration = completeReservation.SubscriptionDuration == SubscriptionDuration.SDSD_3Months ? "3 months"
+                                                        : completeReservation.SubscriptionDuration == SubscriptionDuration.SDSD_6Months ? "6 months"
+                                                        : "9 months";
+                    getExistingSubscription.PickUpDate = completeReservation.PickupDate == VehiclePickUpDate.VPSD_ASAP ? DateTime.UtcNow.AddDays(27)
+                                                            : completeReservation.PickupDate == VehiclePickUpDate.VPSD_1 ? DateTime.UtcNow.AddMonths(1)
+                                                            : DateTime.UtcNow.AddMonths(2);
+
+                    getExistingSubscription.SubscriptionStatus = SubscriptionStatus.Awaiting;
+
+                    var updatedSubscription = await _subscriptionRepository.UpdateSubscription(getExistingSubscription);
+
+                    if (completeReservation.AdditionalDrivers == true && completeReservation.CoSubscribers != null)
+                    {
+                        foreach (var coSubscriberModel in completeReservation.CoSubscribers)
+                        {
+                            var checkUserExists = await _manager.FindByEmailAsync(coSubscriberModel.CoSubEmail!);
+
+                            if (checkUserExists == null)
+                            {
+                                var newUser = new AppUser
+                                {
+                                    FirstName = coSubscriberModel.CoSubFirstName,
+                                    LastName = coSubscriberModel.CoSubLastName,
+                                    Email = coSubscriberModel.CoSubEmail,
+                                    PhoneNumber = coSubscriberModel.CoSubPhone,
+                                    UserName = coSubscriberModel.CoSubEmail,
+                                    Type = "Co_Subscriber"
+                                };
+
+                                var addedUser = await _manager.CreateAsync(newUser);
+                                await _manager.AddToRoleAsync(newUser, "Co_Subscriber");
+
+                                if (addedUser.Succeeded)
+                                {
+                                    var addSubscriber = new Co_SubscriberInvitee
+                                    {
+                                        FirstName = newUser.FirstName!,
+                                        LastName = newUser.LastName!,
+                                        Email = newUser.Email!,
+                                        SubscriberId = subscriber.Id,
+                                        Subscriber = subscriber,
+                                        Vehicle = vehicle,
+                                        VehicleId = vehicle is not null ? vehicle.Id : null,
+                                        AppUserId = newUser.Id
+                                    };
+
+                                    await _coSubscriberRepository.AddInvitee(addSubscriber);
+                                }
+                            }
+                            else
+                            {
+                                var coSubscriberCheck = await _coSubscriberRepository.GetCoSubscriberByUserId(checkUserExists.Id);
+                                if (coSubscriberCheck != null)
+                                {
+                                    coSubscriberCheck.SubscriberId = updatedSubscriber.Id;
+                                    coSubscriberCheck.Vehicle = vehicle;
+                                    coSubscriberCheck.VehicleId = vehicle is not null ? vehicle.Id : null;
+                                    coSubscriberCheck.FirstName = checkUserExists.FirstName!;
+                                    coSubscriberCheck.LastName = checkUserExists.LastName!;
+                                    coSubscriberCheck.Email = checkUserExists.Email!;
+
+                                    await _coSubscriberRepository.UpdateInvitee(coSubscriberCheck);
+                                }
+                                else
+                                {
+                                    var addCoSubscriber = new Co_SubscriberInvitee
+                                    {
+                                        FirstName = checkUserExists.FirstName!,
+                                        LastName = checkUserExists.LastName!,
+                                        Email = checkUserExists.Email!,
+                                        SubscriberId = subscriber.Id,
+                                        Subscriber = subscriber,
+                                        Vehicle = vehicle,
+                                        VehicleId = vehicle is not null ? vehicle.Id : null,
+                                        AppUserId = checkUserExists.Id
+                                    };
+
+                                    await _coSubscriberRepository.AddInvitee(addCoSubscriber);
+                                }
+                            }
+                        }
+                    }
+
+                    var payViewModel = new PayViewModel
+                    {
+                        Name = $"{subscriber.FirstName} {subscriber.LastName}",
+                        Email = subscriber.Email,
+                        VehicleId = vehicle!.Id,
+                        SubscriberId = subscriber.Id,
+                        OperatorId = vehicle.OperatorId,
+                        Amount = vehicle.ReservationFee
+                    };
+
+                    vehicle.VehicleStatus = VehicleStatus.Reserved.ToString();
+                    _vehicleRepository.UpdateVehicle(vehicle);
+
+                    _logger.LogInformation("Proceed to Payment");
+                    return RedirectToAction("Index", "Pay", payViewModel);
+                }
+
+                _logger.LogError("User may not exist");
+                TempData["error"] = "User may not exist";
+                return RedirectToAction("Login", "Account");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, "Something went wrong when reserving car");
+                TempData["error"] = "Something went wrong when reserving car. Contact Support!";
+                return View(completeReservation);
+            }
+        }
     }
 }
