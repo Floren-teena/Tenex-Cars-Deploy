@@ -10,7 +10,7 @@ namespace TenexCarsDeploy.Data.Repositories.Interfaces
     public interface ICoSubscriberRepository
     {
         Task<Co_SubscriberInvitee> AddInvitee(Co_SubscriberInvitee invitee);
-        Task<Co_SubscriberInvitee> GetCoSubscriberByUserId(string userId);
+        Task<Co_SubscriberInvitee?> GetCoSubscriberByUserId(string userId);
         Task<Co_SubscriberInvitee> UpdateInvitee(Co_SubscriberInvitee invitee);
     }
 }

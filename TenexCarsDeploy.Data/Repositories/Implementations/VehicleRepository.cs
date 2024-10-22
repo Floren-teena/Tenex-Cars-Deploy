@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TenexCars.DataAccess.Enums;
-using TenexCars.DataAccess.Models;
-using TenexCars.DataAccess.Repositories.Interfaces;
-using TenexCars.DataAccess.ViewModels;
+using TenexCarsDeploy.Data.Enums;
+using TenexCarsDeploy.Data.Models;
+using TenexCarsDeploy.Data.Repositories.Interfaces;
+using TenexCarsDeploy.Data.ViewModels;
 
 namespace TenexCars.DataAccess.Repositories.Implementations
 {
@@ -18,7 +18,7 @@ namespace TenexCars.DataAccess.Repositories.Implementations
         {
             _context = context;
         }
-        public async Task<Vehicle> GetVehicleById(string Id)
+        public async Task<Vehicle?> GetVehicleById(string Id)
         {
             return await _context.Vehicles.FirstOrDefaultAsync(x => x.Id == Id);
         }
@@ -73,7 +73,7 @@ namespace TenexCars.DataAccess.Repositories.Implementations
             }
             if (query.CompanyName != null)
             {
-                vehicles = vehicles.Where(v => v.Operator.CompanyName == query.CompanyName);
+                vehicles = vehicles.Where(v => v.Operator!.CompanyName == query.CompanyName);
             }
          
             return await vehicles.ToListAsync();
@@ -100,7 +100,7 @@ namespace TenexCars.DataAccess.Repositories.Implementations
 
         public async Task<List<Vehicle>> GetAllVehicleByOperator(string operatorId)
         {
-            var vehicles = _context.Vehicles.Include(v => v.Operator).Where(v => v.OperatorId == operatorId).ToList();
+            var vehicles = await _context.Vehicles.Include(v => v.Operator).Where(v => v.OperatorId == operatorId).ToListAsync();
             return vehicles;
         }
 
@@ -218,7 +218,7 @@ namespace TenexCars.DataAccess.Repositories.Implementations
             return newVehicle.Entity;
         }
 
-        public async Task<IEnumerable<Vehicle>> GetTopUniqueVehiclesAsync(int count = 8)
+        public async Task<IEnumerable<Vehicle?>> GetTopUniqueVehiclesAsync(int count = 8)
         {
             return await _context.Vehicles
                 .GroupBy(v => new { v.Make, v.Model })

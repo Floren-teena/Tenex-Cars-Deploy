@@ -10,6 +10,6 @@ namespace TenexCarsDeploy.Data.Repositories.Interfaces
 	public interface IVehicleRequestRepository
 	{
 		Task<VehicleRequest> AddVehicleRequestLog(VehicleRequest request);
-		Task<VehicleRequest> GetVehicleRequestBySubscriberId(string id);
+		Task<VehicleRequest?> GetVehicleRequestBySubscriberId(string id);
 	}
 }

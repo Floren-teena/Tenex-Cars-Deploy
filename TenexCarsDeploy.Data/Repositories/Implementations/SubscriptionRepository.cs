@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TenexCars.DataAccess.Enums;
-using TenexCars.DataAccess.Models;
-using TenexCars.DataAccess.Repositories.Interfaces;
+using TenexCarsDeploy.Data.Enums;
+using TenexCarsDeploy.Data.Models;
+using TenexCarsDeploy.Data.Repositories.Interfaces;
 
 namespace TenexCars.DataAccess.Repositories.Implementations
 {
@@ -26,24 +26,24 @@ namespace TenexCars.DataAccess.Repositories.Implementations
 		}
         public async Task<IEnumerable<Subscription>> GetAllSubscription()
         {
-            return _context.Subscriptions.ToList();
+            return await _context.Subscriptions.ToListAsync();
         }
 
-        public async Task<Subscription> GetSubscriptionBySubcriber(string Id)
+        public async Task<Subscription?> GetSubscriptionBySubcriber(string Id)
         {
             return await _context.Subscriptions.FirstOrDefaultAsync(s => s.SubscriberId == Id);
         }
 
-        public async Task<Subscription> GetSubscriptionForVehicle(string vehicleId)
+        public async Task<Subscription?> GetSubscriptionForVehicle(string vehicleId)
         {
 			return await _context.Subscriptions.FirstOrDefaultAsync(s => s.VehicleId == vehicleId);
         }
 
-        public async Task<Subscription> GetSubscriptionForOperator(string operatorId)
+        public async Task<Subscription?> GetSubscriptionForOperator(string operatorId)
         {
             var result = await _context.Subscriptions
                 .Include(s => s.Vehicle).Include(s => s.Subscriber)
-                .ThenInclude(sub => sub.AppUser)
+                .ThenInclude(sub => sub!.AppUser)
                 .FirstOrDefaultAsync(s => s.OperatorId == operatorId);
             if(result == null)
             {
@@ -56,14 +56,14 @@ namespace TenexCars.DataAccess.Repositories.Implementations
         {
             return await _context.Subscriptions
                                  .Include(s => s.Subscriber)
-                                 .ThenInclude(sub => sub.AppUser)
+                                 .ThenInclude(sub => sub!.AppUser)
                                  .Include(s => s.Vehicle)
                                  .Where(s => s.OperatorId == operatorId)
                                  .ToListAsync();
         }
 
 
-        public async Task<Subscription> UpdateSubscription(Subscription getExistingSubscription)
+        public async Task<Subscription?> UpdateSubscription(Subscription getExistingSubscription)
         {
             var isSubscriber = await _context.Subscriptions.FindAsync(getExistingSubscription.Id);
 
@@ -103,7 +103,7 @@ namespace TenexCars.DataAccess.Repositories.Implementations
                 .ToListAsync();
         }
 
-        public async Task<Subscription> GetActiveSubscriptionBySubscriberId(string subscriberId)
+        public async Task<Subscription?> GetActiveSubscriptionBySubscriberId(string subscriberId)
         {
                  return await _context.Subscriptions
                 .FirstOrDefaultAsync(sub => sub.SubscriberId == subscriberId && sub.SubscriptionStatus == SubscriptionStatus.Active);

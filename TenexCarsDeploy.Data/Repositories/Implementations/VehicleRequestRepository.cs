@@ -4,9 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using TenexCars.DataAccess.Models;
-using TenexCars.DataAccess.Repositories.Interfaces;
+using TenexCarsDeploy.Data.Models;
+using TenexCarsDeploy.Data.Repositories.Interfaces;
 
 namespace TenexCars.DataAccess.Repositories.Implementations
 {
@@ -25,7 +24,7 @@ namespace TenexCars.DataAccess.Repositories.Implementations
 			return newRequest.Entity;
 		}
 
-        public async Task<VehicleRequest> GetVehicleRequestBySubscriberId(string id)
+        public async Task<VehicleRequest?> GetVehicleRequestBySubscriberId(string id)
         {
             return await _context.VehicleRequests.FirstOrDefaultAsync(r => r.VehicleId == id);
         }

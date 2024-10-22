@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TenexCars.DataAccess.Models;
-using TenexCars.DataAccess.Repositories.Interfaces;
+using TenexCarsDeploy.Data.Models;
+using TenexCarsDeploy.Data.Repositories.Interfaces;
 
 namespace TenexCars.DataAccess.Repositories.Implementations
 {
@@ -24,7 +24,7 @@ namespace TenexCars.DataAccess.Repositories.Implementations
             return newInvitee.Entity;
         }
 
-        public async Task<Co_SubscriberInvitee> GetCoSubscriberByUserId(string userId)
+        public async Task<Co_SubscriberInvitee?> GetCoSubscriberByUserId(string userId)
         {
             return await _context.Co_SubscriberInvitees.FirstOrDefaultAsync(c => c.AppUserId == userId);
         }
@@ -41,7 +41,7 @@ namespace TenexCars.DataAccess.Repositories.Implementations
             }
             else
             {
-                return null;
+                return null!;
             }
         }
     }

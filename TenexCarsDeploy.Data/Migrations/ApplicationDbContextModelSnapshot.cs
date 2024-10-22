@@ -193,9 +193,6 @@ namespace TenexCarsDeploy.Data.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
-                    b.Property<string>("OperatorId")
-                        .HasColumnType("text");
-
                     b.Property<string>("PasswordHash")
                         .HasColumnType("text");
 
@@ -275,9 +272,6 @@ namespace TenexCarsDeploy.Data.Migrations
                     b.Property<string>("AppUserId")
                         .HasColumnType("text");
 
-                    b.Property<string>("AppUserId1")
-                        .HasColumnType("text");
-
                     b.Property<string>("BusinessName")
                         .HasColumnType("text");
 
@@ -296,7 +290,7 @@ namespace TenexCarsDeploy.Data.Migrations
                     b.Property<string>("CompanyRegistrationDocument")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("ContactDOB")
+                    b.Property<DateTime?>("ContactDOB")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("ContactLink")
@@ -352,7 +346,7 @@ namespace TenexCarsDeploy.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AppUserId1");
+                    b.HasIndex("AppUserId");
 
                     b.ToTable("Operators");
                 });
@@ -827,7 +821,7 @@ namespace TenexCarsDeploy.Data.Migrations
                 {
                     b.HasOne("TenexCarsDeploy.Data.Models.AppUser", "AppUser")
                         .WithMany()
-                        .HasForeignKey("AppUserId1");
+                        .HasForeignKey("AppUserId");
 
                     b.Navigation("AppUser");
                 });

@@ -1,0 +1,4 @@
+2024-10-22 05:40:54.315 +01:00 [INF] Starting web host
+2024-10-22 05:40:57.632 +01:00 [WRN] The foreign key property 'Operator.AppUserId1' was created in shadow state because a conflicting property with the simple name 'AppUserId' exists in the entity type, but is either not mapped, is already used for another relationship, or is incompatible with the associated primary key type. See https://aka.ms/efcore-relationships for information on mapping relationships in EF Core.
+2024-10-22 11:37:28.486 +01:00 [Information] Starting web host
+2024-10-22 11:37:33.085 +01:00 [Warning] The foreign key property '"Operator"."AppUserId1"' was created in shadow state because a conflicting property with the simple name '"AppUserId"' exists in the entity type, but is either not mapped, is already used for another relationship, or is incompatible with the associated primary key type. See https://aka.ms/efcore-relationships for information on mapping relationships in EF Core.

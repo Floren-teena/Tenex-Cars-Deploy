@@ -10,12 +10,12 @@ namespace TenexCarsDeploy.Data.Repositories.Interfaces
 	public interface ISubscriberRepository
 	{
 		Task<Subscriber> AddSubscriberAsync(Subscriber subscriber);
-		Task<Subscriber> GetSubscriberByIdAsync(string Id);
+		Task<Subscriber?> GetSubscriberByIdAsync(string Id);
         Task<Co_SubscriberInvitee> AddNewDriver(Co_SubscriberInvitee driver);
-        Task <Subscriber> GetSubscriberByUserId(string id);
+        Task <Subscriber?> GetSubscriberByUserId(string id);
         Task <Subscriber>UpdateSubscriberAsync(Subscriber subscriber);
         List<Subscription> GetSubscriptionsBySubscriberId(string subscriberId);
-        Subscriber GetSubscriberById(string subscriberId);
+        Subscriber? GetSubscriberById(string subscriberId);
         int CalculateAge(DateTime birthDate);
 
     }

@@ -12,7 +12,7 @@ namespace TenexCarsDeploy.Data.Models
         public string? PhoneNumber { get; set; }
         public string? CompanyName { get; set; }
         public string? CompanyAddress { get; set; }
-        public DateTime ContactDOB { get; set; }
+        public DateTime? ContactDOB { get; set; } = DateTime.UtcNow;
         public string? Country { get; set; }
         public string? State { get; set; }
         public string? City { get; set; }

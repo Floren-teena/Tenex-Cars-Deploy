@@ -1,6 +1,6 @@
 ﻿using TenexCarsDeploy.Data.Enums;
 
-namespace TenexCars.Models.ViewModels
+namespace TenexCarsDeploy.Models.ViewModels
 {
     public class CarDetailsViewModel
     {

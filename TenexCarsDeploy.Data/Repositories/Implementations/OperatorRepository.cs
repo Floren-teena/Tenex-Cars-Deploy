@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TenexCars.DataAccess.Enums;
-using TenexCars.DataAccess.Models;
-using TenexCars.DataAccess.Repositories.Interfaces;
+using TenexCarsDeploy.Data.Enums;
+using TenexCarsDeploy.Data.Models;
+using TenexCarsDeploy.Data.Repositories.Interfaces;
 
 namespace TenexCars.DataAccess.Repositories.Implementations
 {
@@ -21,7 +21,7 @@ namespace TenexCars.DataAccess.Repositories.Implementations
             _context = context;
             _userManager = userManager;
         }
-        public async Task<Operator> GetOperatorByIdAsync(string Id)
+        public async Task<Operator?> GetOperatorByIdAsync(string Id)
         {
             return await _context.Operators.FirstOrDefaultAsync(x => x.Id == Id);
         }
@@ -32,12 +32,12 @@ namespace TenexCars.DataAccess.Repositories.Implementations
             return operators;
         }
 
-        public async Task<OperatorMember> GetOperatorMemberByUserId(string Id)
+        public async Task<OperatorMember?> GetOperatorMemberByUserId(string Id)
         {
             return await _context.OperatorMembers.FirstOrDefaultAsync(x => x.AppUserId == Id);
         }
 
-        public async Task<Operator> GetOperatorByUserId(string Id)
+        public async Task<Operator?> GetOperatorByUserId(string Id)
         {
             return await _context.Operators.FirstOrDefaultAsync(x => x.AppUserId == Id);
         }
@@ -70,7 +70,7 @@ namespace TenexCars.DataAccess.Repositories.Implementations
 			var member = await _context.OperatorMembers.FirstOrDefaultAsync(a => a.Email == email);
 			if (member != null)
 			{
-                var user = await _userManager.FindByIdAsync(member.AppUserId);
+                var user = await _userManager.FindByIdAsync(member.AppUserId!);
                 if (user != null)
                 {
                     await _userManager.DeleteAsync(user);
@@ -110,7 +110,7 @@ namespace TenexCars.DataAccess.Repositories.Implementations
                                       .ToListAsync();
 
             return await _context.VehicleRequests
-                                .CountAsync(vr => vehicleIds.Contains(vr.VehicleId));
+                                .CountAsync(vr => vehicleIds.Contains(vr.VehicleId!));
         }
 
         public async Task<int> GetTotalNumberOfActiveCars(string operatorId)
@@ -120,7 +120,7 @@ namespace TenexCars.DataAccess.Repositories.Implementations
                 .CountAsync();
         }
 
-        public async Task<Operator> GetOperatorById(string Id)
+        public async Task<Operator?> GetOperatorById(string Id)
         {
             return await _context.Operators.FirstOrDefaultAsync(x => x.Id == Id);
         }

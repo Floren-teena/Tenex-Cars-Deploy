@@ -1,15 +1,13 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using TenexCars.DataAccess.Models;
+using TenexCarsDeploy.Data.Models;
 using TenexCars.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using TenexCarsDeploy.Data.Repositories.Interfaces;
 
 public class AccountRepository : IAccountRepository
 {
-
 	private readonly ApplicationDbContext _context;
 	private readonly UserManager<AppUser> _userManager;
-
 
 	public AccountRepository(ApplicationDbContext context, UserManager<AppUser> userManager)
 	{
@@ -17,7 +15,7 @@ public class AccountRepository : IAccountRepository
 		_userManager = userManager;
 	}
 
-	public async Task<Operator> GetOperatorById(string Id)
+	public async Task<Operator?> GetOperatorById(string Id)
 	{
 		return await _context.Operators.FirstOrDefaultAsync(x => x.Id == Id);
 	}

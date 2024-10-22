@@ -26,7 +26,7 @@ namespace TenexCarsDeploy.Models.ViewModels
 
 	public class CustomPasswordValidation : ValidationAttribute
 	{
-		protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+		protected override ValidationResult? IsValid(object value, ValidationContext validationContext)
 		{
 			var password = value as string;
 

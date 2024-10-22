@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace TenexCars.Models.ViewModels
+namespace TenexCarsDeploy.Models.ViewModels
 {
     public class CompleteReservationViewModel
     {

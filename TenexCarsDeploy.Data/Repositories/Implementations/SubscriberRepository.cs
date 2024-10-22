@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TenexCars.DataAccess.Enums;
-using TenexCars.DataAccess.Models;
-using TenexCars.DataAccess.Repositories.Interfaces;
+using TenexCarsDeploy.Data.Enums;
+using TenexCarsDeploy.Data.Models;
+using TenexCarsDeploy.Data.Repositories.Interfaces;
 
 namespace TenexCars.DataAccess.Repositories.Implementations
 {
@@ -25,7 +25,7 @@ namespace TenexCars.DataAccess.Repositories.Implementations
 			return newSubscriber.Entity;
 		}
 
-		public async Task<Subscriber> GetSubscriberByIdAsync(string Id)
+		public async Task<Subscriber?> GetSubscriberByIdAsync(string Id)
 		{
 			return await _context.Subscribers.FirstOrDefaultAsync(s => s.Id == Id);
 
@@ -38,7 +38,7 @@ namespace TenexCars.DataAccess.Repositories.Implementations
             return coSub.Entity;
         }
 
-        public async Task<Subscriber> GetSubscriberByUserId(string id)
+        public async Task<Subscriber?> GetSubscriberByUserId(string id)
         {
             return await _context.Subscribers.FirstOrDefaultAsync(s => s.AppUserId == id);
         }
@@ -55,7 +55,7 @@ namespace TenexCars.DataAccess.Repositories.Implementations
             }
             else
             {
-                return null;
+                return null!;
             }
         }
 
@@ -68,7 +68,7 @@ namespace TenexCars.DataAccess.Repositories.Implementations
                            .ToList();
         }
 
-        public Subscriber GetSubscriberById(string subscriberId)
+        public Subscriber? GetSubscriberById(string subscriberId)
         {
             return _context.Subscribers
                            .Include(s => s.Transactions)

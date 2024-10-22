@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 using TenexCars.DataAccess;
 using TenexCarsDeploy.Data.Enums;
 using TenexCarsDeploy.Data.Models;
+using TenexCarsDeploy.Data.Repositories.Interfaces;
 
 namespace TenexCarsDeploy.Data
 {
@@ -19,9 +21,10 @@ namespace TenexCarsDeploy.Data
             private readonly IOperatorRepository _operatorRepository;
             private readonly IVehicleRepository _vehicleRepository;
             private readonly ISubscriberRepository _subscriberRepository;
+            private readonly ILogger<SeedData> _logger;
 
-            public SeedData(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext applicationDbContext,
-                IOperatorRepository operatorRepository, IVehicleRepository vehicleRepository, ISubscriberRepository subscriberRepository)
+        public SeedData(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext applicationDbContext,
+                IOperatorRepository operatorRepository, IVehicleRepository vehicleRepository, ISubscriberRepository subscriberRepository, ILogger<SeedData> logger)
             {
                 _userManager = userManager;
                 _roleManager = roleManager;
@@ -29,7 +32,8 @@ namespace TenexCarsDeploy.Data
                 _operatorRepository = operatorRepository;
                 _vehicleRepository = vehicleRepository;
                 _subscriberRepository = subscriberRepository;
-            }
+                _logger = logger;
+        }
 
             public async Task SeedAsync()
             {
@@ -97,11 +101,13 @@ namespace TenexCarsDeploy.Data
                     await _userManager.CreateAsync(operatorUser3, "199026_Ll");
                     await _userManager.AddToRoleAsync(operatorUser3, "Main_Operator");
 
+                try
+                {
                     var firstOperator = new Operator
                     {
                         FirstName = "Alice",
                         LastName = "Smith",
-                        Email = operatorUser.Email,
+                        Email = "alice.smith@example.com",
                         PhoneNumber = "987-654-3210",
                         CompanyName = "Alice Smith Cars",
                         CompanyAddress = "456 Oak St",
@@ -109,7 +115,7 @@ namespace TenexCarsDeploy.Data
                         State = "Ontario",
                         City = "Toronto",
                         Zip = "12345",
-                        ContactDOB = new DateTime(1990, 10, 25),
+                        ContactDOB = new DateTime(1990, 10, 25, 0, 0, 0, DateTimeKind.Utc),
                         SupportContact1 = "help@xyzcorp.com",
                         SupportContact2 = "help@xyzcorpz.com",
                         InsuranceOffering = 0,
@@ -122,8 +128,6 @@ namespace TenexCarsDeploy.Data
                         BusinessName = "Alice Smith Cars",
                         AppUserId = operatorUser.Id,
                         AppUser = operatorUser,
-
-
 
                     };
 
@@ -142,7 +146,7 @@ namespace TenexCarsDeploy.Data
                         State = "Texas",
                         City = "Austin",
                         Zip = "12345",
-                        ContactDOB = new DateTime(1988, 10, 25),
+                        ContactDOB = new DateTime(1988, 10, 25, 0, 0, 0, DateTimeKind.Utc),
                         SupportContact1 = "help@xyzcorp.com",
                         SupportContact2 = "help@xyzcorpz.com",
                         InsuranceOffering = 0,
@@ -172,7 +176,7 @@ namespace TenexCarsDeploy.Data
                         State = "Michigan",
                         City = "Detroit",
                         Zip = "12345",
-                        ContactDOB = new DateTime(1970, 10, 25),
+                        ContactDOB = new DateTime(1970, 10, 25, 0, 0, 0, DateTimeKind.Utc),
                         SupportContact1 = "help@xyzcorp.com",
                         SupportContact2 = "help@xyzcorpz.com",
                         InsuranceOffering = 0,
@@ -188,7 +192,6 @@ namespace TenexCarsDeploy.Data
 
                     };
                     await _operatorRepository.AddOperatorAsync(thirdOperator);
-
 
                     var firstVehicle = new Vehicle
                     {
@@ -743,6 +746,13 @@ namespace TenexCarsDeploy.Data
                     await _vehicleRepository.AddVehicleAsync(vehicle9);
 
                 }
+                catch (Exception ex)
+                {
+
+                    _logger.LogError(ex, "Error seeding data");
+                }
+
+            }
 
                 if (!users.Any(u => _userManager.IsInRoleAsync(u, "Main_Subscriber").Result))
                 {
@@ -762,5 +772,5 @@ namespace TenexCarsDeploy.Data
             }
 
 
-        }
-    }
+     }
+}

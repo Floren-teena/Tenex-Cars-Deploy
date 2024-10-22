@@ -11,14 +11,14 @@ namespace TenexCarsDeploy.Data.Repositories.Interfaces
 	{
 		Task<Subscription> AddSubscriptionAsync(Subscription subscription);
         Task<IEnumerable<Subscription>> GetAllSubscription();
-        Task <Subscription>GetSubscriptionBySubcriber(string Id);
-        Task<Subscription> GetSubscriptionForVehicle(string vehicleId);
-        Task <Subscription>UpdateSubscription(Subscription getExistingSubscription);
+        Task <Subscription?>GetSubscriptionBySubcriber(string Id);
+        Task<Subscription?> GetSubscriptionForVehicle(string vehicleId);
+        Task <Subscription?>UpdateSubscription(Subscription getExistingSubscription);
         Task<List<Subscription>> GetAllSubscriptionsForOperator(string operatorId);
-        Task<Subscription> GetSubscriptionForOperator(string operatorId);
+        Task<Subscription?> GetSubscriptionForOperator(string operatorId);
         Task<IEnumerable<Subscription>> GetSubscriptionsByOperatorAsync(string operatorId);
         bool CancelSubscription(string subscriptionId);
-        Task<Subscription> GetActiveSubscriptionBySubscriberId(string subscriberId);
+        Task<Subscription?> GetActiveSubscriptionBySubscriberId(string subscriberId);
         //Task<string> GetSubscriptionStatusForOperator(string operatorId);
 
 
