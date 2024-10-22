@@ -339,6 +339,106 @@ namespace TenexCarsDeploy.Controllers.Subscriber_Controller
             return View();
         }
 
+        [HttpGet]
 
+        public async Task<IActionResult> Profile()
+        {
+            var user = await _manager.GetUserAsync(User);
+
+            var subscriber = _subscriberRepository.GetSubscriberById(user!.Id);
+
+            if (subscriber == null)
+            {
+                return NotFound("Subscriber not found.");
+            }
+
+            var viewModel = new SubscriberProfileViewModel
+            {
+                Subscriber = subscriber,
+
+                Subscriptions = _subscriberRepository.GetSubscriptionsBySubscriberId(subscriber.Id)
+            };
+
+            return View(viewModel);
+        }
+
+
+        [HttpPost]
+        public IActionResult Profile(string subscriptionId)
+        {
+            var result = _subscriptionRepository.CancelSubscription(subscriptionId);
+
+            if (!result)
+            {
+                TempData["Failure"] = "Unable to cancel subscription";
+
+                return RedirectToAction("Profile");
+            }
+            TempData["Success"] = "Cancel Subscription Successful";
+
+            return RedirectToAction("Profile");
+        }
+
+
+
+        [HttpGet]
+
+        public async Task<IActionResult> SubscriptionHistory()
+        {
+            var user = await _manager.GetUserAsync(User);
+
+            var subscriber = _subscriberRepository.GetSubscriberById(user!.Id);
+
+            if (subscriber == null)
+            {
+                return NotFound("Subscriber not found.");
+            }
+
+            var viewModel = new SubscriberProfileViewModel
+            {
+                Subscriber = subscriber,
+
+                Subscriptions = _subscriberRepository.GetSubscriptionsBySubscriberId(subscriber.Id)
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ActiveSubscription()
+        {
+            var user = await _manager.GetUserAsync(User);
+
+            var subscriber = _subscriberRepository.GetSubscriberById(user!.Id);
+
+            if (subscriber == null)
+            {
+                return NotFound("Subscriber not found.");
+            }
+
+            var viewModel = new SubscriberProfileViewModel
+            {
+                Subscriber = subscriber,
+
+                Subscriptions = _subscriberRepository.GetSubscriptionsBySubscriberId(subscriber.Id)
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public Task<IActionResult> ActiveSubscription(string subscriptionId)
+        {
+            var result = _subscriptionRepository.CancelSubscription(subscriptionId);
+
+            if (!result)
+            {
+                TempData["error"] = "Unable to cancel subscription.";
+                return Task.FromResult<IActionResult>(RedirectToAction("ActiveSubscription"));
+            }
+
+            TempData["success"] = "Subscription cancelled successfully.";
+            return Task.FromResult<IActionResult>(RedirectToAction("ActiveSubscription"));
+        }
     }
 }
