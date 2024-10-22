@@ -7,6 +7,7 @@ using TenexCarsDeploy.Data.Repositories.Interfaces;
 using TenexCarsDeploy.Data.ViewModels;
 using TenexCarsDeploy.Interfaces;
 using TenexCarsDeploy.Models.ViewModels;
+using TenexCarsDeploy.TenexCarsDeploy.Data.DTOs;
 
 namespace TenexCarsDeploy.Controllers.Operator_Controller
 {
@@ -468,7 +469,7 @@ namespace TenexCarsDeploy.Controllers.Operator_Controller
                 Email = model.Email,
                 FirstName = model.FirstName,
                 LastName = model.LastName,
-                OperatorId = operatorUser?.Id,
+                //OperatorId = operatorUser?.Id,
                 Type = model.Role == "Admin" ? "Main_Operator" : "Operator_Team_Member"
             };
             var result = await _userManager.CreateAsync(user);
@@ -481,9 +482,9 @@ namespace TenexCarsDeploy.Controllers.Operator_Controller
 
                     var newOperator = new Operator
                     {
-                        FirstName = model.FirstName,
-                        LastName = model.LastName,
-                        Email = model.Email,
+                        FirstName = model.FirstName!,
+                        LastName = model.LastName!,
+                        Email = model.Email!,
                         AppUserId = user.Id
                     };
 
@@ -495,12 +496,12 @@ namespace TenexCarsDeploy.Controllers.Operator_Controller
 
                     var newOperatorMember = new OperatorMember
                     {
-                        FirstName = model.FirstName,
-                        LastName = model.LastName,
-                        Email = model.Email,
+                        FirstName = model.FirstName!,
+                        LastName = model.LastName!,
+                        Email = model.Email!,
                         AppUserId = user.Id,
                         Role = model.Role,
-                        OperatorId = operatorUser.Id,
+                        OperatorId = operatorUser!.Id,
                         Operator = operatorUser
                     };
                     await _operatorRepository.AddOperatorMemberAsync(newOperatorMember);
