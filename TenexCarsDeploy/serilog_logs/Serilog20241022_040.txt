@@ -1,0 +1,3 @@
+2024-10-22 21:59:56.160 +01:00 [INF] Starting web host
+2024-10-22 22:00:02.640 +01:00 [INF] seeded data
+2024-10-22 22:00:04.409 +01:00 [WRN] The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results. If the 'Distinct' operator is used after 'OrderBy', then make sure to use the 'OrderBy' operator after 'Distinct' as the ordering would otherwise get erased.

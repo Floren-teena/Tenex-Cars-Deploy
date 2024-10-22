@@ -1,2 +1,8 @@
 2024-10-22 17:02:25.183 +01:00 [INF] Starting web host
 2024-10-22 17:02:37.326 +01:00 [INF] seeded data
+2024-10-22 21:39:22.478 +01:00 [Information] Starting web host
+2024-10-22 21:39:32.782 +01:00 [Information] seeded data
+2024-10-22 21:39:35.933 +01:00 [Warning] The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results. If the 'Distinct' operator is used after 'OrderBy', then make sure to use the 'OrderBy' operator after 'Distinct' as the ordering would otherwise get erased.
+2024-10-22 21:42:16.286 +01:00 [Information] User found: "manor@mailinator.com"
+2024-10-22 21:42:16.931 +01:00 [Information] User roles: "Main_Operator"
+2024-10-22 21:42:16.933 +01:00 [Information] Redirecting to Operator page
