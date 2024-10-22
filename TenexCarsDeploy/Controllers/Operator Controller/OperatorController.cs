@@ -126,7 +126,6 @@ namespace TenexCarsDeploy.Controllers.Operator_Controller
             return View();
         }
 
-        // GET: Vehicle/Create
         [HttpGet]
         public async Task<IActionResult> CreateVehicle()
         {
@@ -145,9 +144,7 @@ namespace TenexCarsDeploy.Controllers.Operator_Controller
             return View(viewModel);
         }
 
-        // POST: Vehicle/Create
         [HttpPost]
-        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateVehicle(CreateVehicleViewModel vehicleViewModel)
         {
             _logger.LogInformation($"Creating Vehicle ...");
@@ -161,12 +158,12 @@ namespace TenexCarsDeploy.Controllers.Operator_Controller
 
                 var operatorUser = user is not null ? await _operatorRepository.GetOperatorByUserId(user.Id) : null;
 
-                var vehicleImage = await _photoService.AddPhotoAsync(vehicleViewModel.ImageUrl);
+                var vehicleImage = await _photoService.AddPhotoAsync(vehicleViewModel.ImageUrl!);
 
                 var newVehicle = new Vehicle
                 {
                     Operator = operatorUser,
-                    OperatorId = operatorUser.Id,
+                    OperatorId = operatorUser!.Id,
                     Make = vehicleViewModel.Make,
                     Model = vehicleViewModel.Model,
                     PlateNumber = vehicleViewModel.PlateNumber,
@@ -208,8 +205,6 @@ namespace TenexCarsDeploy.Controllers.Operator_Controller
                     BluetoothSystem = vehicleViewModel.BluetoothSystem,
                     WheelDrive = vehicleViewModel.WheelDrive,
                     EngineType = vehicleViewModel.EngineType,
-                    //CarName = vehicleViewModel.CarName,
-                    //CarModel = vehicleViewModel.CarModel,
                     State = vehicleViewModel.State,
                     DcFastCharging = vehicleViewModel.DcFastCharging,
                     HomeCharger = vehicleViewModel.HomeCharger,
